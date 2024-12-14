@@ -6,7 +6,8 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: nginx
+    # app: nginx
+    app: nginx-blue       # start with blue (Update the Service selector to app: nginx-green when you want to switch)
   ports:
   - protocol: TCP
     port: 80
