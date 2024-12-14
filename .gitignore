@@ -1,0 +1,37 @@
+# General files
+*.log
+*.tmp
+*.swp
+.DS_Store
+thumbs.db
+
+# Terraform files
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# GCP service account keys
+*.json
+/keys/
+
+# Docker files
+Dockerfile.lock
+
+# VS Code
+.vscode/
+.idea/
+
+# Local environment files
+.env
+.env.local
+
+# Build directories
+/build/
+dist/
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
