@@ -1,16 +1,18 @@
 steps:
   # Authenticate with GCP (built-in service account)
   - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Authenticate with GCP'
     entrypoint: "bash"
     args:
       - "-c"
       - |
         echo "Authenticating with GCP"
         gcloud config set project $PROJECT_ID
-        gcloud config set compute/region $REGION
+        gcloud config set compute/region $_REGION
 
-  # Build and Push Docker Image to Google Container Registry (GCR)
+  # Build Docker Image
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Docker Image'
     args:
       [
         "build",
@@ -19,7 +21,9 @@ steps:
         "."
       ]
 
+  # Push Docker Image
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Docker Image'
     args:
       [
         "push",
@@ -28,18 +32,20 @@ steps:
 
   # Deploy to GKE cluster
   - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy to GKE Cluster'
     entrypoint: "bash"
     args:
       - "-c"
       - |
         echo "Deploying to GKE cluster"
-        gcloud container clusters get-credentials my-gke-cluster --region $REGION
+        gcloud container clusters get-credentials my-gke-cluster --region $_REGION
         kubectl apply -f kubernetes/namespace.yaml
         kubectl apply -f kubernetes/deployment.yaml
         kubectl apply -f kubernetes/service.yaml
 
-  # Verify deployment
+  # Verify Deployment
   - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Verify Deployment'
     entrypoint: "bash"
     args:
       - "-c"
@@ -48,7 +54,9 @@ steps:
         kubectl get pods -n test-namespace
         kubectl describe service nginx-service -n test-namespace
 
+substitutions:
+  _REGION: "us-central1"  # Define the region substitution
+
 options:
   env:
     - 'PROJECT_ID=bold-gadget-444515-n6'
-    - 'REGION=us-central1'
